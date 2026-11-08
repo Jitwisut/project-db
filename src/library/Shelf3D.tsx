@@ -2,7 +2,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { OrbitControls } from '@react-three/drei'
 import { Color, Group, MathUtils, MeshStandardMaterial } from 'three'
-import { SceneLabel } from '../world/SceneLabel'
+import { SceneLabel } from './SceneLabel'
 import { GENRES, GENRE_COLORS, SHELF_WIDTH, bookSize, layoutBooks, shelfIndex, type ActiveLoan, type Book } from './model'
 
 export interface Viz {

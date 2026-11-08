@@ -1,14 +1,15 @@
 // ตัวกลางคุยกับ Worker: ส่งคำสั่ง รอผล และตัดการทำงานเมื่อเกินเวลา
 import SqlWorker from './sql.worker?worker'
-import type { Param, QueryResult, RunOutcome, TableInfo, WorkerRequest, WorkerResponse } from './types'
+import type { Param, QueryResult, WorkerRequest, WorkerResponse } from './types'
 
 export const TIMEOUT_MS = 4000
 
 type Pending = { resolve: (r: WorkerResponse) => void; reject: (e: Error) => void; timer: number }
+type Request = WorkerRequest extends infer R ? (R extends unknown ? Omit<R, 'id'> : never) : never
 
 export class TimeoutError extends Error {}
 
-export class SqlClient {
+class SqlClient {
   private worker: Worker
   private seq = 0
   private pending = new Map<number, Pending>()
@@ -30,7 +31,7 @@ export class SqlClient {
     return w
   }
 
-  /** query วนไม่จบ: ฆ่า worker ทิ้งแล้วสร้างใหม่ ฐานข้อมูลจะกลับเป็นข้อมูลตั้งต้น */
+  /** คำสั่งค้าง: ปิด Worker แล้วสร้างใหม่ ฐานข้อมูลจะกลับเป็นข้อมูลตั้งต้น */
   private restart() {
     this.worker.terminate()
     for (const p of this.pending.values()) {
@@ -41,7 +42,7 @@ export class SqlClient {
     this.worker = this.spawn()
   }
 
-  private send(req: WorkerRequest extends infer R ? (R extends unknown ? Omit<R, 'id'> : never) : never): Promise<WorkerResponse> {
+  private send(req: Request): Promise<WorkerResponse> {
     const id = ++this.seq
     return new Promise((resolve, reject) => {
       const timer = window.setTimeout(() => this.restart(), TIMEOUT_MS)
@@ -50,28 +51,17 @@ export class SqlClient {
     })
   }
 
+  /** รัน SQL 1 คำสั่ง ค่าใน params จะถูกผูกเข้ากับเครื่องหมาย ? ตามลำดับ */
   async query(sql: string, params: Param[] = []): Promise<QueryResult> {
     const res = await this.send({ type: 'query', sql, params })
     if (res.type !== 'query') throw new Error('unexpected response')
     return res.result
   }
 
-  async run(sql: string, fresh = false): Promise<{ outcome: RunOutcome; schema: TableInfo[] }> {
-    const res = await this.send({ type: 'run', sql, fresh })
-    if (res.type !== 'run') throw new Error('unexpected response')
-    return { outcome: res.outcome, schema: res.schema }
-  }
-
-  async reset(): Promise<TableInfo[]> {
-    const res = await this.send({ type: 'reset' })
-    return 'schema' in res ? res.schema : []
-  }
-
-  async schema(): Promise<TableInfo[]> {
-    const res = await this.send({ type: 'schema' })
-    return 'schema' in res ? res.schema : []
+  /** ล้างฐานข้อมูลแล้วสร้างใหม่จากข้อมูลตั้งต้น (seed.ts) */
+  async reset(): Promise<void> {
+    await this.send({ type: 'reset' })
   }
 }
 
-// worker ตัวเดียวของห้องสมุด ข้อมูลที่แก้ไขจะอยู่จนกว่าจะกด RESET หรือรีเฟรชหน้า
 export const db = new SqlClient()

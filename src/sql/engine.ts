@@ -1,9 +1,8 @@
-// แกนประมวลผล SQL แบบ pure function ใช้ได้ทั้งใน Web Worker และใน Vitest (Node)
+// แกนประมวลผล SQL: สร้างฐานข้อมูลจาก seed และรันคำสั่งแบบ prepared statement
+// เป็น pure function จึงใช้ได้ทั้งใน Web Worker (ตอนรันเว็บ) และใน Vitest (ตอนรันเทสต์)
 import type { Database, SqlJsStatic, SqlValue } from 'sql.js'
 import { SEED_SQL } from './seed'
-import type { Param, QueryResult, RunOutcome, StatementResult, TableInfo } from './types'
-
-export const MAX_ROWS = 500
+import type { Param, QueryResult, TableInfo } from './types'
 
 export function createSeededDb(SQL: SqlJsStatic): Database {
   const db = new SQL.Database()
@@ -11,50 +10,9 @@ export function createSeededDb(SQL: SqlJsStatic): Database {
   return db
 }
 
-const DML = /^\s*(?:--[^\n]*\n\s*|\/\*[\s\S]*?\*\/\s*)*(insert|update|delete|replace)\b/i
-
 function normalize(v: SqlValue): string | number | null {
   if (v instanceof Uint8Array) return `<BLOB ${v.length} bytes>`
   return v
-}
-
-/** รันทุกคำสั่งในสคริปต์ทีละคำสั่ง เก็บผลของแต่ละคำสั่งแยกกัน */
-export function runSql(db: Database, sql: string, maxRows = MAX_ROWS): RunOutcome {
-  const started = performance.now()
-  const results: StatementResult[] = []
-  try {
-    for (const stmt of db.iterateStatements(sql)) {
-      const text = stmt.getSQL().trim()
-      const columns = stmt.getColumnNames()
-      if (columns.length > 0) {
-        const rows: (string | number | null)[][] = []
-        let truncated = false
-        while (stmt.step()) {
-          if (rows.length >= maxRows) {
-            truncated = true
-            break
-          }
-          rows.push(stmt.get().map(normalize))
-        }
-        results.push({ kind: 'rows', sql: text, columns, rows, truncated })
-      } else {
-        stmt.step()
-        if (DML.test(text)) {
-          results.push({ kind: 'changes', sql: text, changes: db.getRowsModified() })
-        } else {
-          results.push({ kind: 'ok', sql: text })
-        }
-      }
-    }
-    return { ok: true, results, ms: performance.now() - started }
-  } catch (err) {
-    return {
-      ok: false,
-      results,
-      error: err instanceof Error ? err.message : String(err),
-      ms: performance.now() - started,
-    }
-  }
 }
 
 /** อ่านโครงสร้างตารางทั้งหมดในฐานข้อมูล (ชื่อคอลัมน์ ชนิด และจำนวนแถว) */
