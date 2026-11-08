@@ -22,12 +22,19 @@ export interface TableInfo {
   columns: ColumnInfo[]
 }
 
+export type Param = string | number | null
+export type QueryResult =
+  | { ok: true; columns: string[]; rows: Cell[][]; changes: number; ms: number }
+  | { ok: false; error: string; ms: number }
+
 export type WorkerRequest =
+  | { id: number; type: 'query'; sql: string; params: Param[] }
   | { id: number; type: 'run'; sql: string; fresh: boolean }
   | { id: number; type: 'reset' }
   | { id: number; type: 'schema' }
 
 export type WorkerResponse =
+  | { id: number; type: 'query'; result: QueryResult }
   | { id: number; type: 'run'; outcome: RunOutcome; schema: TableInfo[] }
   | { id: number; type: 'reset' | 'schema'; schema: TableInfo[] }
   | { id: number; type: 'fatal'; error: string }

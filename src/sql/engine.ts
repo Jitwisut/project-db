@@ -1,7 +1,7 @@
 // แกนประมวลผล SQL แบบ pure function ใช้ได้ทั้งใน Web Worker และใน Vitest (Node)
 import type { Database, SqlJsStatic, SqlValue } from 'sql.js'
 import { SEED_SQL } from './seed'
-import type { RunOutcome, StatementResult, TableInfo } from './types'
+import type { Param, QueryResult, RunOutcome, StatementResult, TableInfo } from './types'
 
 export const MAX_ROWS = 500
 
@@ -79,4 +79,21 @@ export function readSchema(db: Database): TableInfo[] {
       })),
     }
   })
+}
+
+/** รันคำสั่งเดียวแบบ prepared statement: ค่าจากผู้ใช้ถูกส่งผ่าน ? (bind) ไม่ได้ต่อเข้าไปในข้อความ SQL */
+export function queryOnce(db: Database, sql: string, params: Param[] = []): QueryResult {
+  const started = performance.now()
+  let stmt
+  try {
+    stmt = db.prepare(sql)
+    stmt.bind(params)
+    const columns = stmt.getColumnNames(), rows: (string | number | null)[][] = []
+    while (stmt.step()) rows.push(stmt.get().map(normalize))
+    return { ok: true, columns, rows, changes: columns.length ? 0 : db.getRowsModified(), ms: performance.now() - started }
+  } catch (err) {
+    return { ok: false, error: err instanceof Error ? err.message : String(err), ms: performance.now() - started }
+  } finally {
+    stmt?.free()
+  }
 }

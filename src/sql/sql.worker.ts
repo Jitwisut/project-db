@@ -3,7 +3,7 @@
 // ถ้า query ค้าง ฝั่งหน้าเว็บจะ terminate worker นี้แล้วสร้างใหม่
 import initSqlJs, { type Database } from 'sql.js'
 import wasmUrl from 'sql.js/dist/sql-wasm.wasm?url'
-import { createSeededDb, readSchema, runSql } from './engine'
+import { createSeededDb, queryOnce, readSchema, runSql } from './engine'
 import type { WorkerRequest, WorkerResponse } from './types'
 
 const ready = initSqlJs({ locateFile: () => wasmUrl })
@@ -30,7 +30,9 @@ self.onmessage = (event: MessageEvent<WorkerRequest>) => {
 
 async function handle(req: WorkerRequest) {
   try {
-    if (req.type === 'run') {
+    if (req.type === 'query') {
+      post({ id: req.id, type: 'query', result: queryOnce(await currentDb(), req.sql, req.params) })
+    } else if (req.type === 'run') {
       const target = req.fresh ? await freshDb() : await currentDb()
       const outcome = runSql(target, req.sql)
       post({ id: req.id, type: 'run', outcome, schema: readSchema(target) })

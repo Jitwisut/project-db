@@ -98,7 +98,7 @@ export function Shelf3D({ books, loans, viz, selected, onPick }: Props) {
   const shelfY = (i: number) => (rows - 1 - i) * SHELF_GAP + .02
   const shelfNames = [...GENRES, 'Other'].slice(0, rows)
 
-  return <Canvas shadows dpr={[1, 2]} camera={{ position: [0, 4.4, 12.5], fov: 40 }} onPointerMissed={() => onPick(null)}>
+  return <Canvas shadows dpr={[1, 2]} camera={{ position: [0, 4.0, 15.5], fov: 38 }} onPointerMissed={() => onPick(null)}>
     <color attach="background" args={['#0a0c0b']} />
     <fog attach="fog" args={['#0a0c0b', 14, 30]} />
     <ambientLight intensity={.35} />
@@ -122,6 +122,6 @@ export function Shelf3D({ books, loans, viz, selected, onPick }: Props) {
       })}
     </group>
     <gridHelper args={[40, 40, '#1f3a2c', '#121e18']} position={[0, -.07, 0]} />
-    <OrbitControls target={[0, 3.4, 0]} enableDamping minDistance={5} maxDistance={20} minAzimuthAngle={-.75} maxAzimuthAngle={.75} minPolarAngle={.6} maxPolarAngle={1.75} />
+    <OrbitControls target={[0, 3.2, 0]} enableDamping minDistance={5} maxDistance={20} minAzimuthAngle={-.75} maxAzimuthAngle={.75} minPolarAngle={.6} maxPolarAngle={1.75} />
   </Canvas>
 }

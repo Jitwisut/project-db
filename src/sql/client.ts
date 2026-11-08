@@ -1,6 +1,6 @@
 // ตัวกลางคุยกับ Worker: ส่งคำสั่ง รอผล และตัดการทำงานเมื่อเกินเวลา
 import SqlWorker from './sql.worker?worker'
-import type { RunOutcome, TableInfo, WorkerRequest, WorkerResponse } from './types'
+import type { Param, QueryResult, RunOutcome, TableInfo, WorkerRequest, WorkerResponse } from './types'
 
 export const TIMEOUT_MS = 4000
 
@@ -48,6 +48,12 @@ export class SqlClient {
       this.pending.set(id, { resolve, reject, timer })
       this.worker.postMessage({ ...req, id } as WorkerRequest)
     })
+  }
+
+  async query(sql: string, params: Param[] = []): Promise<QueryResult> {
+    const res = await this.send({ type: 'query', sql, params })
+    if (res.type !== 'query') throw new Error('unexpected response')
+    return res.result
   }
 
   async run(sql: string, fresh = false): Promise<{ outcome: RunOutcome; schema: TableInfo[] }> {
