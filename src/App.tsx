@@ -108,7 +108,7 @@ export function App() {
   const result = outcome ? lastRows(outcome) : undefined
   return <div className="app">
     <header className="top">
-      <div className="brand"><span className="mark" /> LIBRARY <i>/</i> SQL SHELF</div>
+      <div className="brand"><span className="mark" /> BOOK <i>/</i> DB</div>
       <p>ระบบฐานข้อมูลห้องสมุด · SQLite ทำงานในเบราว์เซอร์ · หนังสือ 1 เล่ม = 1 แถวในตาราง books</p>
     </header>
 
