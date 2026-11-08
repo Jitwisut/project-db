@@ -1,10 +1,10 @@
 :root {
-  --bg: #06080d;
-  --panel: #0b111c;
-  --line: rgba(132, 147, 170, 0.18);
-  --text: #edf5ff;
-  --muted: #8493aa;
-  --cyan: #51e5ff;
+  --bg: #080a09;
+  --panel: #0d1210;
+  --line: rgba(150, 168, 156, 0.18);
+  --text: #eef4ef;
+  --muted: #8fa096;
+  --cyan: #5fd49a;
   --amber: #ffbd70;
   --red: #ff6b7a;
   --display: 'Space Grotesk', 'IBM Plex Sans Thai', sans-serif;
@@ -22,7 +22,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .top { grid-column: 1 / -1; display: flex; align-items: baseline; gap: 18px; padding: 14px 22px; border-bottom: 1px solid var(--line); }
 .brand { font-family: var(--display); font-weight: 700; letter-spacing: .08em; display: flex; align-items: center; gap: 8px; white-space: nowrap; }
 .brand i { color: var(--cyan); font-style: normal; font-weight: 500; }
-.mark { width: 12px; height: 16px; border: 2px solid var(--cyan); border-radius: 2px; box-shadow: 0 0 10px rgba(81, 229, 255, .45); }
+.mark { width: 12px; height: 16px; border: 2px solid var(--cyan); border-radius: 2px; box-shadow: 0 0 10px rgba(95, 212, 154, .45); }
 .top p { margin: 0; color: var(--muted); font-size: 13px; }
 
 .panel { background: var(--panel); border-right: 1px solid var(--line); padding: 16px 18px 24px; overflow-y: auto; }
@@ -54,7 +54,7 @@ button { font: inherit; color: inherit; cursor: pointer; }
 
 /* editor (textarea over highlighted pre) */
 .editor { display: grid; background: #04070c; border: 1px solid var(--line); border-radius: 6px; }
-.editor:focus-within { border-color: rgba(81, 229, 255, .6); }
+.editor:focus-within { border-color: rgba(95, 212, 154, .6); }
 .editor-layer, .editor-input { grid-area: 1 / 1; margin: 0; padding: 10px 12px; font-family: var(--mono); font-size: 13px; line-height: 1.6; white-space: pre-wrap; overflow-wrap: anywhere; border: 0; tab-size: 2; }
 .editor-layer { pointer-events: none; color: var(--text); }
 .editor-input { resize: none; overflow: hidden; background: transparent; color: transparent; caret-color: var(--cyan); outline: none; }
@@ -81,19 +81,19 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 5px; vertical-align: -1px; }
 .legend .lit { background: var(--cyan); box-shadow: 0 0 8px var(--cyan); }
 .legend .loan { background: var(--amber); }
-.info { position: absolute; right: 16px; top: 16px; width: 270px; padding: 12px 14px; background: rgba(11, 17, 28, .92); border: 1px solid var(--line); border-radius: 8px; backdrop-filter: blur(8px); font-size: 13px; }
+.info { position: absolute; right: 16px; top: 16px; width: 270px; padding: 12px 14px; background: rgba(13, 18, 16, .92); border: 1px solid var(--line); border-radius: 8px; backdrop-filter: blur(8px); font-size: 13px; }
 .info small { font-family: var(--mono); color: var(--muted); font-size: 11px; }
 .info h2 { margin: 2px 0 8px; font-family: var(--display); font-size: 19px; line-height: 1.25; }
 .info dl { display: grid; grid-template-columns: auto 1fr; gap: 2px 12px; margin: 0; }
 .info dt { color: var(--muted); }
 .info dd { margin: 0; }
 .info .close { position: absolute; right: 8px; top: 6px; background: none; border: 0; color: var(--muted); }
-.book-tag { white-space: nowrap; font-family: var(--mono); font-size: 11px; padding: 3px 7px; background: rgba(6, 8, 13, .85); border: 1px solid rgba(81, 229, 255, .4); border-radius: 4px; color: var(--text); max-width: 260px; overflow: hidden; text-overflow: ellipsis; }
+.book-tag { white-space: nowrap; font-family: var(--mono); font-size: 11px; padding: 3px 7px; background: rgba(8, 10, 9, .85); border: 1px solid rgba(95, 212, 154, .4); border-radius: 4px; color: var(--text); max-width: 260px; overflow: hidden; text-overflow: ellipsis; }
 .book-tag b { color: var(--cyan); margin-right: 6px; }
 .book-tag small { display: block; color: var(--muted); font-size: 10px; }
 .book-tag.hover { border-color: rgba(255, 189, 112, .6); }
 .shelf-tag { font-family: var(--mono); font-size: 10px; letter-spacing: .14em; text-transform: uppercase; color: #e9dcc2; white-space: nowrap; padding: 1px 6px; background: rgba(40, 28, 20, .85); border: 1px solid rgba(233, 220, 194, .3); border-radius: 2px; }
-.group-tag { font-family: var(--display); white-space: nowrap; padding: 2px 10px; border-left: 2px solid var(--cyan); background: rgba(6, 8, 13, .7); }
+.group-tag { font-family: var(--display); white-space: nowrap; padding: 2px 10px; border-left: 2px solid var(--cyan); background: rgba(8, 10, 9, .7); }
 .group-tag b { font-size: 24px; color: var(--cyan); margin-right: 4px; }
 .group-tag small { color: var(--muted); }
 

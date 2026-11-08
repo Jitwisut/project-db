@@ -16,7 +16,7 @@ export interface Viz {
 export const EMPTY_VIZ: Viz = { mode: 'none', ids: new Set(), dimOthers: false, labels: new Map(), ranks: new Map(), groups: new Map() }
 
 const SHELF_GAP = 1.45
-const ACCENT = new Color('#2bb8d6')
+const ACCENT = new Color('#2f9e6a')
 
 interface Props {
   books: Book[]
@@ -99,12 +99,12 @@ export function Shelf3D({ books, loans, viz, selected, onPick }: Props) {
   const shelfNames = [...GENRES, 'Other'].slice(0, rows)
 
   return <Canvas shadows dpr={[1, 2]} camera={{ position: [0, 4.4, 12.5], fov: 40 }} onPointerMissed={() => onPick(null)}>
-    <color attach="background" args={['#070b12']} />
-    <fog attach="fog" args={['#070b12', 14, 30]} />
+    <color attach="background" args={['#0a0c0b']} />
+    <fog attach="fog" args={['#0a0c0b', 14, 30]} />
     <ambientLight intensity={.35} />
-    <hemisphereLight args={['#9fc4ff', '#1a120c', .45]} />
+    <hemisphereLight args={['#d6ead9', '#1a120c', .45]} />
     <directionalLight position={[-5, 9, 8]} intensity={1.6} color="#ffe2bf" castShadow shadow-mapSize={[1024, 1024]} shadow-camera-left={-8} shadow-camera-right={8} shadow-camera-top={9} shadow-camera-bottom={-2} />
-    <pointLight position={[4.5, 6.5, 3]} intensity={18} distance={14} color="#51e5ff" />
+    <pointLight position={[4.5, 6.5, 3]} intensity={18} distance={14} color="#ffcf8a" />
     <group position={[0, 0, 0]}>
       <Bookcase rows={rows} />
       {shelfNames.map((name, i) => <SceneLabel key={name} position={[-SHELF_WIDTH / 2 + .75, shelfY(i) - .06, .5]} center zIndexRange={[5, 1]}>
@@ -121,7 +121,7 @@ export function Shelf3D({ books, loans, viz, selected, onPick }: Props) {
           selected={selected === b.id} onPick={onPick} />
       })}
     </group>
-    <gridHelper args={[40, 40, '#16324a', '#0e1c2a']} position={[0, -.07, 0]} />
+    <gridHelper args={[40, 40, '#1f3a2c', '#121e18']} position={[0, -.07, 0]} />
     <OrbitControls target={[0, 3.4, 0]} enableDamping minDistance={5} maxDistance={20} minAzimuthAngle={-.75} maxAzimuthAngle={.75} minPolarAngle={.6} maxPolarAngle={1.75} />
   </Canvas>
 }
